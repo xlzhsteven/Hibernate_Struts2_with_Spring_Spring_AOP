@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd 
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd 
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+ <bean id="createEmployeeAction" class="com.xiaolong.action.CreateEmployeeAction">
+ 	<property name="employeeService"> 
+ 		<ref bean="employeeService"/>
+ 	</property>
+ </bean>
+ 
+ <bean id="fireEmployeeAction" class="com.xiaolong.action.FireEmployeeAction">
+ 	<property name="employeeService"> 
+ 		<ref bean="employeeService"/>
+ 	</property>
+ </bean>
+ 
+ 
+ <bean id="employeeService" class="com.xiaolong.svc.EmployeeServiceImpl">  
+ 	<property name="employeeDAO"> 
+ 		<ref bean="employeeDAO"/>	
+ 	</property>
+ </bean>
+ 
+ <bean id="employeeDAO" class="com.xiaolong.dao.EmployeeDAOImpl">
+ 	<property name="sessionFactory"> 
+ 		<ref bean="sessionFactory"/>	
+ 	</property>
+ </bean>
+ 
+ <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+	<property name="configLocation" value="classpath:hibernate.cfg.xml" />
+ </bean>
+ 
+ <bean id="employeeAdvice" class="com.xiaolong.aop.EmployeeAdvice"></bean>
+ 
+ <!-- <bean id="employeeServiceProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+ 	<property name="target" ref="employeeService"></property>
+ 	<property name="interceptorNames" value="employeePointCut"></property>
+ 	<property name="proxyInterfaces" value="com.xiaolong.svc.EmployeeService"></property>
+ </bean>
+ 
+ <bean id="employeePointCut" 
+ 	class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+ 	<property name="pattern" value=".*addEmployee.*"></property>
+ 	<property name="pattern" value=".*Employee.*"></property>
+ 	<property name="advice" ref="employeeAdvice"></property>
+ </bean> -->
+ 
+ <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+ 
+ <!-- <bean id="Advice" class="com.xiaolong.aop.EmployeeAdvice"></bean> -->
+ 
+ <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+	<constructor-arg ref="sessionFactory" ></constructor-arg>
+ </bean>
+ <tx:annotation-driven/>
+</beans>
